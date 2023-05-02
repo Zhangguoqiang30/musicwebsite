@@ -1,5 +1,5 @@
 # create database mymusic;
-
+# mysql
 use mymusic;
 
 -- 登录用户表
