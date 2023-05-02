@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxy.mapper.UserMapper">
+
+    <resultMap id="fileResult" type="MusicFile">
+        <id property="primaryKey" column="FILE_ID"/>
+        <result property="fileName" column="FILE_NAME"/>
+        <result property="fileType" column="FILE_TYPE"/>
+        <result property="fileUrl" column="FILE_URL"/>
+        <result property="fileDate" column="FILE_DATE"/>
+    </resultMap>
+
+    <resultMap type="User" id="MusicUserResult">
+        <id property="primaryKey" column="USER_ID"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="userLoginName" column="USER_LOGINNAME"/>
+        <result property="userPassword" column="USER_PASSWORD"/>
+        <result property="singerDate" column="SINGER_DATE"/>
+        <!--        主要用于一对一关系-->
+        <association property="userHead" column="USER_HEAD" javaType="MusicFile" resultMap="fileResult"/>
+        <!--主要用于一对多关系-->
+        <!--<collection property="userHead" ofType="MusicFile">-->
+        <!--    <id property="primaryKey" column="FILE_ID"/>-->
+        <!--    <result property="fileName" column="FILE_NAME"/>-->
+        <!--    <result property="fileType" column="FILE_TYPE"/>-->
+        <!--    <result property="fileUrl" column="FILE_URL"/>-->
+        <!--    <result property="fileDate" column="FILE_DATE"/>-->
+        <!--</collection>-->
+    </resultMap>
+
+
+    <resultMap id="listBeansMap" type="ListBean">
+        <id property="primaryKey" column="list_id"/>
+        <result property="listName" column="list_name"/>
+    </resultMap>
+
+
+    <select id="selectMusicUser" parameterType="User" resultMap="MusicUserResult">
+        select mu.USER_ID,mu.USER_NAME,mu.USER_LOGINNAME,mu.SINGER_DATE,mf.FILE_URL
+        from
+        music_user as mu left join music_file mf on mu.USER_HEAD = mf.FILE_ID;
+        <where>
+            <if test="primaryKey != null  and primaryKey != ''">and mu.USER_ID = #{primaryKey}</if>
+        </where>
+    </select>
+
+
+    <select id="selectUserList" parameterType="User" resultMap="listBeansMap">
+        select mu.user_id,ml.list_id,ml.list_name
+        from music_user as mu left join music_user_list as mul on mu.user_id = mul.user_id left join music_list as ml on
+        mul.list_id = ml.list_id
+        <where>
+            <if test="primaryKey != null  and primaryKey != ''">and mu.USER_ID = #{primaryKey}</if>
+        </where>
+    </select>
+
+
+    <update id="updateUser" parameterType="User">
+        update music_user mu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">mu.user_name = #{userName},</if>
+            <if test="userLoginName != null">mu.user_loginname = #{userLoginName},</if>
+            <if test="singerDate != null">mu.singer_date = #{singerDate},</if>
+        </trim>
+        where mu.user_id = #{primaryKey}
+    </update>
+
+
+</mapper>

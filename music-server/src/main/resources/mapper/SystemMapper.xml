@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxy.mapper.SystemMapper">
+
+    <resultMap id="fileResult" type="MusicFile">
+        <id property="primaryKey" column="FILE_ID"/>
+        <result property="fileName" column="FILE_NAME"/>
+        <result property="fileType" column="FILE_TYPE"/>
+        <result property="fileUrl" column="FILE_URL"/>
+        <result property="fileDate" column="FILE_DATE"/>
+    </resultMap>
+
+    <insert id="upload2DB" parameterType="MusicFile">
+        insert into music_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="primaryKey != null">FILE_ID,</if>
+            <if test="fileName != null">FILE_NAME,</if>
+            <if test="fileType != null">FILE_TYPE,</if>
+            <if test="fileUrl != null">FILE_URL,</if>
+            <if test="fileDate != null">FILE_DATE,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="primaryKey != null">#{primaryKey},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="fileType != null">#{fileType},</if>
+            <if test="fileUrl != null">#{fileUrl},</if>
+            <if test="fileDate != null">#{fileDate},</if>
+        </trim>
+    </insert>
+
+    <!--    更新用户表头像信息-->
+    <update id="uploadUserHeard">
+        update music_user as mu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="musicFile.primaryKey != null">USER_HEAD = #{musicFile.primaryKey},</if>
+        </trim>
+        where USER_ID = #{uploadNo}
+    </update>
+
+
+    <!--重置密碼-->
+    <update id="resetPWD" parameterType="User">
+        update music_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userPassword != null">USER_PASSWORD = #{userPassword}</if>
+        </trim>
+        where USER_ID = #{primaryKey}
+    </update>
+
+
+    <select id="selectUserHeard" resultType="Integer">
+        select 1 from music_file as fm
+        <where>
+            1 = 1
+            <if test="uploadNo != null">
+                and fm.file_id = #{uploadNo}
+            </if>
+            and file_type = '1'
+        </where>
+    </select>
+
+    <insert id="InsertSinger" parameterType="java.util.List">
+        insert into music_singer (SINGER_ID, SINGER_NAME,SINGER_ALIGNS,SINGER_NATION,SINGER_HEAD,SINGER_AGE,SINGER_SEX) values
+        <foreach collection="list" item="singer" index="index" separator=",">
+            (#{singer.singerRemake}, #{singer.singerName},#{singer.singerAligns},#{singer.singerNation},#{singer.head},100,0 )
+        </foreach>
+    </insert>
+
+</mapper>

@@ -1,0 +1,46 @@
+server:
+  port: 8085
+
+# 数据源配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      username: root
+      password: !Zgq154218
+      url: jdbc:mysql://121.37.206.27:3306/mymusic?serverTimezone=Asia/Shanghai
+  redis:
+    host: 121.37.206.27
+    port: 6379
+    password:
+    timeout: 10s
+# MyBatis配置
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: com.zxy.**.bean
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+#线程池配置
+threadpool:
+  corePoolSize: 8
+  maxPoolSize: 16
+  queueCapacity: 5
+  keepAliveSeconds: 300
+
+
+# 日志配置
+logging:
+  level:
+    com.zxy.cloud: trace
+    org.springframework: warn
+  config: classpath:logback.xml
+
+minio:
+  endpoint:  http://121.37.206.27:9000  #  MinIO服务所在地址
+  fileBucketName: musicserver #  桶名称
+  accessKey: minioadmin #  访问的key
+  secretKey: minioadmin #  访问的秘钥
