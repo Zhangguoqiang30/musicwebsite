@@ -2,6 +2,7 @@ package com.zxy.controller;
 
 import com.zxy.utils.FileUtil;
 import com.zxy.utils.MinioUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,5 +40,21 @@ public class SystemController {
         }
         outputStream.write(FileUtil.FileToByte(file));
     }
+
+//      gpt优化代码
+//    @GetMapping("/download")
+//    public void download(String bucket, String object, HttpServletResponse response) throws IOException {
+//        File file = minioUtils.downloadFile(bucket, object);
+//        try (ServletOutputStream outputStream = response.getOutputStream()) {
+//            String extension = FilenameUtils.getExtension(file.getName());
+//            if (extension.equals("jpg") || extension.equals("png") || extension.equals("gif") || extension.equals("jpeg")) {
+//                response.setContentType("image/" + extension);
+//            } else {
+//                response.setContentType("application/octet-stream");
+//                response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+//            }
+//            outputStream.write(FileUtil.FileToByte(file));
+//        }
+//    }
 
 }
